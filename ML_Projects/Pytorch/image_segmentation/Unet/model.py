@@ -41,7 +41,7 @@ class DoubleConv(nn.Module):
         kernel_size: int = 3,
         stride: int = 1,
         padding: int = 1
-    ):
+    ) -> None:
         """ Initializes the DoubleConv class
 
         Initialize the DobuleConv class with the defined input and output channels. The kernel size, stride, and padding are all set to 3, 1, and 1 respectively for a same convolution.
@@ -93,9 +93,54 @@ class DoubleConv(nn.Module):
 
         return x
 
+class contracting(nn.Module):
+    """ The contracting poertion of UNET architecture
 
+    The contracting portion of the UNET architecture. This is a series of DobubleConv layers followed 
+    by maxpooling layer with decreasing img size and increasing number of channels.
 
+    Args:
+        channels (list[int]): List of channels for each layer in contracting portion
+    
+    Attributes:
+        contracting_layers (nn.ModuleList): A list of DoubleConv blocks followed by maxpooling layers
 
+    """
+
+    def __init__(self, channels: list[int]) -> None:
+        super(contracting, self).__init__()
+        self.contracting_layers = nn.ModuleList()
+
+        # Loop over all excpet last channel value
+        for i in range(len(channels)-1):
+            self.contracting_layers.append(
+                DoubleConv(channels[i], channels[i+1])
+            )
+
+            # Add MaxPool2d to all but last layer
+            if i < (len(channels)-2):
+                self.contracting_layers.append(
+                    nn.MaxPool2d(kernel_size=2)
+                )
+    def forward(self, x: torch.tensor) -> list[torch.tensor]:
+        """ Forward pass of the contracting layers
+
+        Args:
+            x (torch.tensor): An input tensor representing image
+
+        Returns:
+            list[torch.tensor]: A list of the output tensors from each DoubleConv block
+        """ 
+        outputs = []
+        for step in self.contracting_layers:
+            x = step(x)
+
+            if isinstance(step, DoubleConv):
+                outputs.append(step)
+        
+        return outputs
+
+    
 
 if __name__ == "__main__":
     print("Hello World")
