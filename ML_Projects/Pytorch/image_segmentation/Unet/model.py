@@ -237,8 +237,8 @@ if __name__ == "__main__":
     out_channels = 1
     model = UNET(channels=channel_list, out_channels=out_channels)
 
-    in_tensor = torch.randn(1,3,256,256)
-    print(type(in_tensor))
+    in_tensor = torch.randn(3,3,256,256)
     out = model(in_tensor)
 
+    # should be 3,1,256,256
     print(out.shape)
