@@ -1,5 +1,4 @@
-"""
-Pytorch implementation of UNET
+""" Pytorch implementation of UNET
 
 This provides a simple implementation of the UNET architecture for semantic (image) segmentation.
 
