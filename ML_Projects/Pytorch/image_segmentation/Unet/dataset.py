@@ -1,9 +1,11 @@
 """ Dataset module for UNET experiment
 
-This contains a pytorch dataset to load carvana set for images and masks for UNET.
+This contains a pytorch dataset to load carvana set for images and masks for
+UNET.
 
 Classes:
-    DoubleConv: A double convolution layer with batch normalization and ReLU activation.
+    DoubleConv: A double convolution layer with batch normalization and ReLU
+        activation.
 
 author: Shane Moran
 (c) 2023 Shane Moran. All rights reserved.
@@ -16,6 +18,7 @@ from typing import Optional
 import torchvision.transforms.v2 as T2
 from PIL import Image
 from torch.utils.data import Dataset
+import torch
 
 
 class CarvanaDataSet(Dataset):
@@ -33,17 +36,21 @@ class CarvanaDataSet(Dataset):
         image_dir: str,
         masks_dir: str,
         image_list: list[str],
-        transform: Optional[Callable] = None,
+        transform: Optional[Callable[[Image.Image,
+                                      Image.Image], torch.Tensor]] = None,
     ):
         self.image_dir = image_dir
         self.masks_dir = masks_dir
         self.image_list = image_list
-        self.transform = transform
+        self.transform = T2.Compose(
+            [T2.ToImageTensor(), T2.ConvertDtype()])
+        if transform is not None:
+            self.transform = transform
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.image_list)
 
-    def __getitem__(self, idx: int):
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
         """Return item given an index
 
         Given an index returns the tuple pair of image and mask.
@@ -62,20 +69,21 @@ class CarvanaDataSet(Dataset):
             )
         )
 
-        if self.transform is not None:
-            image, mask = self.transform(image, mask)
+        image, mask = self.transform(image, mask)
 
         return image, mask
 
 
-transforms = T2.Compose([T2.Resize((208, 304)), T2.ToImageTensor(), T2.ConvertDtype()])
+transforms = T2.Compose(
+    [T2.Resize((208, 304)), T2.ToImageTensor(), T2.ConvertDtype()])
 
 
 ROOT_DIR = os.path.abspath("")
 IMAGE_DIR = os.path.join(ROOT_DIR, "data", "images")
 MASKS_DIR = os.path.join(ROOT_DIR, "data", "masks")
 IMAGE_LIST = [
-    os.path.basename(x) for x in sorted(gb.glob(os.path.join(IMAGE_DIR, "*.jpg")))
+    os.path.basename(x) for x in sorted(gb.glob(
+        os.path.join(IMAGE_DIR, "*.jpg")))
 ]
 
 segmentationDataset = CarvanaDataSet(
