@@ -11,6 +11,7 @@ author: Shane Moran
 (c) 2023 Shane Moran. All rights reserved.
 """
 
+from utils import display_images
 import glob as gb
 import os
 from typing import Optional
@@ -18,10 +19,8 @@ import torchvision.transforms.v2 as T2
 from PIL import Image
 from torch.utils.data import Dataset, random_split
 import torch
-
-
-RANDOM_STATE = 42
-BATCH_SIZE = 4
+from config import (RANDOM_STATE, IMG_HEIGHT, IMG_WIDTH, DATA_FOLDER,
+                    IMG_FOLDER, MASKS_FOLDER, TRAIN_FRACTION)
 
 
 class CarvanaDataSet(Dataset):
@@ -78,12 +77,14 @@ class CarvanaDataSet(Dataset):
 
 
 transforms = T2.Compose(
-    [T2.Resize((208, 304)), T2.ToImageTensor(), T2.ConvertDtype()])
+    [T2.Resize((IMG_HEIGHT, IMG_WIDTH)),
+     T2.ToImageTensor(),
+     T2.ConvertDtype()])
 
 
 ROOT_DIR = os.path.abspath("")
-IMAGE_DIR = os.path.join(ROOT_DIR, "data", "images")
-MASKS_DIR = os.path.join(ROOT_DIR, "data", "masks")
+IMAGE_DIR = os.path.join(ROOT_DIR, DATA_FOLDER, IMG_FOLDER)
+MASKS_DIR = os.path.join(ROOT_DIR, DATA_FOLDER, MASKS_FOLDER)
 IMAGE_LIST = [
     os.path.basename(x) for x in sorted(gb.glob(
         os.path.join(IMAGE_DIR, "*.jpg")))
@@ -97,10 +98,10 @@ segmentationDataset = CarvanaDataSet(
 )
 
 generator = torch.Generator().manual_seed(RANDOM_STATE)
-train_dataset, test_dataset = random_split(segmentationDataset, [0.8, 0.2])
+train_dataset, test_dataset = random_split(segmentationDataset,
+                                           [TRAIN_FRACTION,
+                                            1.0-TRAIN_FRACTION])
 
 
-a, b = train_dataset[16]
-
-print(a.shape)
-print(b.shape)
+img, mask = segmentationDataset[11]
+display_images(img, mask)

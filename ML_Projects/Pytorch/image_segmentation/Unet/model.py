@@ -18,7 +18,7 @@ import torch.nn as nn
 class DoubleConv(nn.Module):
     """ A double convolution layer in the Unet architecture.
 
-    A series of two convolution layers with batch normalization followed by 
+    A series of two convolution layers with batch normalization followed by
     ReLU activation. Default kernel, padding, and stride result in a 'same'
     convolution, with different number of channels.
 
@@ -93,14 +93,17 @@ class DoubleConv(nn.Module):
 class DownwardLayers(nn.Module):
     """ The downward portion of UNET architecture
 
-    The downward portion of the UNET architecture. This is a series of DoubleConv layers followed 
-    by max-pooling layer with decreasing img size and increasing number of channels.
+    The downward portion of the UNET architecture. This is a series of
+    DoubleConv layers followed by max-pooling layer with decreasing img
+    size and increasing number of channels.
 
     Args:
-        channels (list[int]): List of channels for each layer in contracting portion.
+        channels (list[int]): List of channels for each layer in contracting
+            portion.
 
     Attributes:
-        downward_layers (nn.ModuleList): A list of DoubleConv blocks followed by max-pooling layers.
+        downward_layers (nn.ModuleList): A list of DoubleConv blocks followed
+            by max-pooling layers.
 
     """
 
@@ -123,15 +126,17 @@ class DownwardLayers(nn.Module):
     def forward(self, x: torch.Tensor) -> list[torch.Tensor]:
         """ Forward pass of the downward layers
 
-        Forward pass of the downward layers of the UNET architecture. This will also return
-        the output list of tensors from each DoubleConv block that is used in concatenation
-        with the upward portion of the UNET architecture.
+        Forward pass of the downward layers of the UNET architecture. This
+        will also return the output list of tensors from each DoubleConv
+        block that is used in concatenation with the upward portion
+        of the UNET architecture.
 
         Args:
             x (torch.Tensor): An input tensor representing image.
 
         Returns:
-            list[torch.Tensor]: A list of the output tensors from each DoubleConv block.
+            list[torch.Tensor]: A list of the output tensors from each
+                DoubleConv block.
         """
         outputs = []
         for step in self.downward_layers:
@@ -146,11 +151,13 @@ class DownwardLayers(nn.Module):
 class UpwardLayers(nn.Module):
     """ The upward portion of the UNET architecture
 
-    The upward portion of the UNET architecture. This is a series of up-convolutions and concatenations 
-    with corresponding layer of the downward portion, followed by DoubleConv.
+    The upward portion of the UNET architecture. This is a series of
+    up-convolutions and concatenations with corresponding layer of the
+    downward portion, followed by DoubleConv.
 
     Args:
-        channels (list[int]): List of channels for each layer in the expanding portion.
+        channels (list[int]): List of channels for each layer in the
+            expanding portion.
 
     Attributes:
         upward_layers (nn.ModuleList): A list of up-convolution blocks.
@@ -174,15 +181,17 @@ class UpwardLayers(nn.Module):
                 )
             )
 
-    def forward(self, x: torch.Tensor, downward_features: list[torch.Tensor]) -> torch.Tensor:
+    def forward(self, x: torch.Tensor,
+                downward_features: list[torch.Tensor]) -> torch.Tensor:
         """ forward pass for the upward portion of UNET
 
         Args:
             x (torch.Tensor): An input tensor.
-            downward_features (list[torch.Tensor]): List of tensor features from the downward portion.
+            downward_features (list[torch.Tensor]): List of tensor features
+                from the downward portion.
 
         Returns:
-            torch.Tensor: Output feature tensor. 
+            torch.Tensor: Output feature tensor.
         """
 
         for i, step in enumerate(self.upward_layers):
@@ -202,7 +211,8 @@ class UNET(nn.Module):
 
     Args:
         out_channels (int): the number of final output channels.
-        channels (list[int]): A list of channels for the convolutions at each layer.
+        channels (list[int]): A list of channels for the convolutions
+            at each layer.
 
     Attributes:
         downward (DownwardLayers): The downward layers of UNET.
