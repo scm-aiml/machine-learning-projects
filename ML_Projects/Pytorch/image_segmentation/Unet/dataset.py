@@ -13,12 +13,15 @@ author: Shane Moran
 
 import glob as gb
 import os
-from collections.abc import Callable
 from typing import Optional
 import torchvision.transforms.v2 as T2
 from PIL import Image
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, random_split
 import torch
+
+
+RANDOM_STATE = 42
+BATCH_SIZE = 4
 
 
 class CarvanaDataSet(Dataset):
@@ -28,7 +31,8 @@ class CarvanaDataSet(Dataset):
         image_dir (str): Absolute path of image directory.
         masks_dir (str): Absolute path of masks directory.
         image_list (list[str]): List of image names in dataset (no extension).
-        transform (Callable, optional): A function that transforms an image.
+        transform (torchvision.transforms.v2.Compose, optional): A function
+            that transforms an image.
     """
 
     def __init__(
@@ -36,8 +40,7 @@ class CarvanaDataSet(Dataset):
         image_dir: str,
         masks_dir: str,
         image_list: list[str],
-        transform: Optional[Callable[[Image.Image,
-                                      Image.Image], torch.Tensor]] = None,
+        transform: Optional[T2.Compose] = None,
     ):
         self.image_dir = image_dir
         self.masks_dir = masks_dir
@@ -93,7 +96,11 @@ segmentationDataset = CarvanaDataSet(
     transform=transforms,
 )
 
-a, b = segmentationDataset[16]
+generator = torch.Generator().manual_seed(RANDOM_STATE)
+train_dataset, test_dataset = random_split(segmentationDataset, [0.8, 0.2])
+
+
+a, b = train_dataset[16]
 
 print(a.shape)
 print(b.shape)
