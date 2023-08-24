@@ -148,6 +148,8 @@ def train_loop(model: torch.nn.Module,
             f"test_acc: {test_acc:.4f}"
         )
 
+    torch.save(model.state_dict(), "mymodel.pth")
+
 
 if __name__ == "__main__":
     loss_fn = torch.nn.BCEWithLogitsLoss()
