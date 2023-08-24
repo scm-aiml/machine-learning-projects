@@ -22,7 +22,7 @@ import torch
 RANDOM_STATE = 42
 
 # Hyperparameters
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 NUM_EPOCHS = 10
 
 # Image dimensions
@@ -35,10 +35,10 @@ IMG_FOLDER = 'images'
 MASKS_FOLDER = 'masks'
 
 # train-test split
-TRAIN_FRACTION = 0.8
+TRAIN_FRACTION = 0.1
 
 # Model
-LAYER_CHANNELS = [3, 64, 128, 256, 512, 1024]
+LAYER_CHANNELS = [3, 64, 128, 256, 512]
 OUT_CHANNELS = 1
 
 # Device settings
