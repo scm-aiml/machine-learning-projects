@@ -17,10 +17,10 @@ import os
 from typing import Optional
 import torchvision.transforms.v2 as T2
 from PIL import Image
-from torch.utils.data import Dataset, random_split
+from torch.utils.data import Dataset, random_split, DataLoader
 import torch
 from config import (RANDOM_STATE, IMG_HEIGHT, IMG_WIDTH, DATA_FOLDER,
-                    IMG_FOLDER, MASKS_FOLDER, TRAIN_FRACTION)
+                    IMG_FOLDER, MASKS_FOLDER, TRAIN_FRACTION, BATCH_SIZE)
 
 
 class CarvanaDataSet(Dataset):
@@ -103,5 +103,9 @@ train_dataset, test_dataset = random_split(segmentationDataset,
                                             1.0-TRAIN_FRACTION])
 
 
-img, mask = segmentationDataset[11]
-display_images(img, mask)
+train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE)
+test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
+
+if __name__ == "__main__":
+    img, mask = segmentationDataset[11]
+    display_images(img, mask)
