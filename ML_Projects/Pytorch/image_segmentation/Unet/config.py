@@ -23,7 +23,7 @@ RANDOM_STATE = 42
 
 # Hyperparameters
 BATCH_SIZE = 8
-NUM_EPOCHS = 10
+NUM_EPOCHS = 20
 
 # Image dimensions
 IMG_HEIGHT = 208
@@ -38,7 +38,7 @@ MASKS_FOLDER = 'masks'
 TRAIN_FRACTION = 0.8
 
 # Model
-LAYER_CHANNELS = [3, 64, 128, 256, 512, 1024]
+LAYER_CHANNELS = [3, 64, 128, 256, 512]
 OUT_CHANNELS = 1
 
 # Device settings

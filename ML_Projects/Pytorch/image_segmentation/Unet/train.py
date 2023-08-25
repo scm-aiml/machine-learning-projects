@@ -153,7 +153,7 @@ def train_loop(model: torch.nn.Module,
 
 if __name__ == "__main__":
     loss_fn = torch.nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.Adam(model.parameters())
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
     train_loop(model=model,
                train_dataloader=train_dataloader,

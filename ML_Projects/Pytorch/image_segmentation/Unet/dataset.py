@@ -72,7 +72,7 @@ class CarvanaDataSet(Dataset):
         )
 
         image, mask = self.transform(image, mask)
-
+        mask = (mask > 0).float()
         return image, mask
 
 
@@ -90,6 +90,8 @@ IMAGE_LIST = [
         os.path.join(IMAGE_DIR, "*.jpg")))
 ]
 
+IMAGE_LIST = IMAGE_LIST[:500]
+
 segmentationDataset = CarvanaDataSet(
     image_dir=IMAGE_DIR,
     masks_dir=MASKS_DIR,
@@ -100,7 +102,8 @@ segmentationDataset = CarvanaDataSet(
 generator = torch.Generator().manual_seed(RANDOM_STATE)
 train_dataset, test_dataset = random_split(segmentationDataset,
                                            [TRAIN_FRACTION,
-                                            1.0-TRAIN_FRACTION])
+                                            1.0-TRAIN_FRACTION],
+                                           generator=generator)
 
 
 train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE)
