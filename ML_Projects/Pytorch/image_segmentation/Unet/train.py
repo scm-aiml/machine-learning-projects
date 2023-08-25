@@ -7,11 +7,11 @@ author: Shane Moran
 (c) 2023 Shane Moran. All rights reserved.
 """
 
-from model import UNET
-from config import LAYER_CHANNELS, OUT_CHANNELS, DEVICE, NUM_EPOCHS
+from src.model import UNET
+from src.config import LAYER_CHANNELS, OUT_CHANNELS, DEVICE, NUM_EPOCHS
 import torch
 from torch.utils.data import DataLoader
-from dataset import train_dataloader, test_dataloader
+from src.dataset import train_dataloader, test_dataloader
 from typing import Optional
 from tqdm.auto import tqdm
 

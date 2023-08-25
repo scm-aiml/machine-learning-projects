@@ -11,7 +11,7 @@ author: Shane Moran
 (c) 2023 Shane Moran. All rights reserved.
 """
 
-from utils import display_images
+from src.utils import display_images
 import glob as gb
 import os
 from typing import Optional
@@ -19,8 +19,8 @@ import torchvision.transforms.v2 as T2
 from PIL import Image
 from torch.utils.data import Dataset, random_split, DataLoader
 import torch
-from config import (RANDOM_STATE, IMG_HEIGHT, IMG_WIDTH, DATA_FOLDER,
-                    IMG_FOLDER, MASKS_FOLDER, TRAIN_FRACTION, BATCH_SIZE)
+from src.config import (RANDOM_STATE, IMG_HEIGHT, IMG_WIDTH, DATA_FOLDER,
+                        IMG_FOLDER, MASKS_FOLDER, TRAIN_FRACTION, BATCH_SIZE)
 
 
 class CarvanaDataSet(Dataset):
@@ -90,7 +90,7 @@ IMAGE_LIST = [
         os.path.join(IMAGE_DIR, "*.jpg")))
 ]
 
-IMAGE_LIST = IMAGE_LIST[:500]
+# IMAGE_LIST = IMAGE_LIST[:50]
 
 segmentationDataset = CarvanaDataSet(
     image_dir=IMAGE_DIR,
@@ -106,8 +106,10 @@ train_dataset, test_dataset = random_split(segmentationDataset,
                                            generator=generator)
 
 
-train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE)
-test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
+train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,
+                              shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE,
+                             shuffle=True)
 
 if __name__ == "__main__":
     img, mask = segmentationDataset[11]
