@@ -14,6 +14,7 @@ author: Shane Moran
 import matplotlib.pyplot as plt
 import torch
 import os
+from torch.utils.data import DataLoader
 
 
 def download_data():
@@ -64,6 +65,36 @@ def display_images(image: torch.Tensor, mask: torch.Tensor) -> None:
     plt.subplot(1, 2, 2)
     plt.imshow(mask.permute(1, 2, 0))
     plt.show()
+
+
+def display_comparison(model: torch.nn.Module,
+                       dataloader: DataLoader,
+                       img_number: int,
+                       ) -> None:
+    """Plot truth and predicted mask from data loader
+
+    Args:
+        model (torch.nn.Module): A pretrained PyTorch model to make prediction.
+        dataloader (DataLoader): A dataload instance to get image from.
+        img_number (int): Image index.
+    """
+
+    for img, mask in dataloader:
+        img = img[0, ...]
+        mask = mask[0, ...]
+
+        plt.subplot(1, 3, 1)
+        plt.imshow(img.permute(1, 2, 0))
+        plt.subplot(1, 3, 2)
+        plt.imshow(mask.permute(1, 2, 0))
+
+        preds = (torch.sigmoid(model(torch.unsqueeze(img, 0))) > 0.5).float()
+        plt.subplot(1, 3, 3)
+        preds = preds[0, ...]
+        plt.imshow(preds.permute(1, 2, 0))
+        plt.show()
+
+        break
 
 
 if __name__ == "__main__":
