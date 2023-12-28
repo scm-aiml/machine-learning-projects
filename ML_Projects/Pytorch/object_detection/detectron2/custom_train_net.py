@@ -29,7 +29,7 @@ from detectron2.evaluation import (
     verify_results,
 )
 from detectron2.modeling import GeneralizedRCNNWithTTA
-
+from src.utils import register_coco_datasets
 
 def build_evaluator(cfg, dataset_name, output_folder=None):
     """
@@ -86,6 +86,9 @@ def setup(args):
 
 
 def main(args):
+    
+    datasets_meta = register_coco_datasets(args.dataset_config)
+    
     cfg = setup(args)
 
     if args.eval_only:
@@ -115,13 +118,13 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = default_argument_parser().parse_args()
-    print("Command Line Args:", args)
-    launch(
-        main,
-        args.num_gpus,
-        num_machines=args.num_machines,
-        machine_rank=args.machine_rank,
-        dist_url=args.dist_url,
-        args=(args,),
+    parser = default_argument_parser()
+    parser.add_argument(
+        "--dataset-config",
+        type=str,
+        required=True,
+        help="Path to dataset configuration file"
     )
+    args = parser.parse_args()
+    print("Command Line Args:", args)
+    main(args)
