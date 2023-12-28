@@ -1,15 +1,15 @@
-damange_train:
+damage_train:
   json_file: './data/train/COCO_train_annos.json'
   root_dir: './data/train/'
 
-damange_train_mul:
+damage_train_mul:
   json_file: './data/train/COCO_mul_train_annos.json'
   root_dir: './data/train/'
 
-damange_val:
+damage_val:
   json_file: './data/val/COCO_val_annos.json'
   root_dir: './data/train/'
 
-damange_val_mul:
+damage_val_mul:
   json_file: './data/val/COCO_mul_val_annos.json'
   root_dir: './data/val/'

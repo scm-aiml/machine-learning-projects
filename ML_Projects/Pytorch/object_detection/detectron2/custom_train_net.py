@@ -23,14 +23,12 @@ from collections import OrderedDict
 import detectron2.utils.comm as comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, hooks, launch
 from detectron2.evaluation import (
     COCOEvaluator,
     verify_results,
 )
 from detectron2.modeling import GeneralizedRCNNWithTTA
-from detectron2.data.datasets import register_coco_instances
 
 
 def build_evaluator(cfg, dataset_name, output_folder=None):
@@ -42,11 +40,7 @@ def build_evaluator(cfg, dataset_name, output_folder=None):
     """
     if output_folder is None:
         output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
-    # evaluator_list = []
-    # return DatasetEvaluators(evaluator_list)
-    # evaluator_type = MetadataCatalog.get(dataset_name).evaluator_type
-    
-    # For now just add COCOEvaluator (refer to original train_net.py for logic flow)
+
     return COCOEvaluator(dataset_name, output_dir=output_folder)
 
 class Trainer(DefaultTrainer):
@@ -92,37 +86,6 @@ def setup(args):
 
 
 def main(args):
-    # Train
-    register_coco_instances(
-        name="damage_train",
-        metadata={},
-        json_file="./data/train/COCO_train_annos.json",
-    )
-
-    register_coco_instances(
-        name="damage_train_mul",
-        metadata={},
-        json_file="./data/train/COCO_mul_train_annos.json",
-    )
-
-    # Val
-    register_coco_instances(
-        name="damage_train",
-        metadata={},
-        json_file="./data/train/COCO_train_annos.json",
-    )
-
-    register_coco_instances(
-        name="damage_train_mul",
-        metadata={},
-        json_file="./data/train/COCO_mul_train_annos.json",
-    )
-
-    
-    
-    
-    
-    
     cfg = setup(args)
 
     if args.eval_only:
